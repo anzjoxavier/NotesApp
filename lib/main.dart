@@ -12,6 +12,10 @@ void main() {
       primarySwatch: Colors.blue,
     ),
     home: const HomePage(),
+    routes:{
+      '/LoginView/':((context) => const LoginView()),
+      '/RegisterView/':((context) => const RegisterView()),
+    }
   ));
 }
 
@@ -20,26 +24,26 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Home Page")),
-      body: FutureBuilder(
+    return  FutureBuilder(
           future: Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform,
           ),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                final User = FirebaseAuth.instance.currentUser;
-                if (User?.emailVerified == true) {
-                  print("Email Verified");
-                } else {
-                  print("Email Not Verified");
-                }
-                return const Text("Done");
+                // final user = FirebaseAuth.instance.currentUser;
+                // if (user?.emailVerified == true) {
+                //   return const Text("Done");
+                // } else {
+                //   return const VerifyEmailView();
+                // }
+                return const LoginView();
               default:
-                return const Text("Loading");
+                return const Scaffold(
+                  body:  Center(child: CircularProgressIndicator()));
             }
-          }),
-    );
+          });
   }
 }
+
+
