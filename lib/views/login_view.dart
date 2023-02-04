@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as devtools show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -14,7 +15,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
@@ -22,7 +22,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _email.dispose();
     _password.dispose();
     super.dispose();
@@ -57,14 +56,19 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final user = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(email: email, password: password);
-                print(user);
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
+               Navigator.of(context).pushNamedAndRemoveUntil(
+                '/Notes/', 
+                (route) => false,
+                    );
               } on FirebaseAuthException catch (e) {
                 if (e.code == "user-not-found") {
-                  print("User not found");
+                  devtools.log("User not found");
                 } else if (e.code == "wrong-password") {
-                  print("Wrong password");
+                  devtools.log("Wrong password");
                 }
               }
             },
@@ -72,10 +76,8 @@ class _LoginViewState extends State<LoginView> {
           ),
           TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil("/RegisterView/", 
-                    (route) => false
-                    );
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    "/RegisterView/", (route) => false);
               },
               child: const Text("Register Here"))
         ],

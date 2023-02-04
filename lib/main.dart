@@ -17,6 +17,7 @@ void main() {
       routes: {
         '/LoginView/': ((context) => const LoginView()),
         '/RegisterView/': ((context) => const RegisterView()),
+        '/Notes/':((context) => const NotesView()),
       }));
 }
 
