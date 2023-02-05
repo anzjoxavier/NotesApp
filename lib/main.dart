@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +20,7 @@ void main() {
         LoginRoute: ((context) => const LoginView()),
         RegisterRoute: ((context) => const RegisterView()),
         NotesRoute:((context) => const NotesView()),
+        VerifyEmailRoute:(context)=>const VerifyEmailView(),
       }));
 }
 
