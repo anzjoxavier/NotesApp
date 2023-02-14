@@ -8,19 +8,24 @@ import 'package:path/path.dart' show join;
 
 class NotesService {
   Database? _db;
-  late final Iterable<DatabaseNotes> allNotes;
+
 
   static final NotesService _shared = NotesService._sharedInstance();
   NotesService._sharedInstance();
   factory NotesService() => _shared;
 
-  List<DatabaseNotes> _notes = [];
-  final _notesStreamControlled =
+
+  final _notesStreamController =
       StreamController<List<DatabaseNotes>>.broadcast();
+  Stream<List<DatabaseNotes>> get allNotes => _notesStreamController.stream; 
+  
+
+  List<DatabaseNotes> _notes = [];
+  
   Future<void> _cacheNotes() async {
-    allNotes = await getAllNotes();
+    final allNotes = await getAllNotes();
     _notes = allNotes.toList();
-    _notesStreamControlled.add(_notes);
+    _notesStreamController.add(_notes);
   }
 
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
@@ -52,7 +57,7 @@ class NotesService {
       isSyncedWithCloud: true,
     );
     _notes.add(note);
-    _notesStreamControlled.add(_notes);
+    _notesStreamController.add(_notes);
     return note;
   }
 
@@ -65,7 +70,7 @@ class NotesService {
       throw CouldNotDeleteNote();
     } else {
       _notes.removeWhere((note) => note.id == id);
-      _notesStreamControlled.add(_notes);
+      _notesStreamController.add(_notes);
     }
   }
 
@@ -80,7 +85,7 @@ class NotesService {
       final note = DatabaseNotes.fromRow(notes.first);
       _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
-      _notesStreamControlled.add(_notes);
+      _notesStreamController.add(_notes);
       return note;
     }
   }
@@ -105,7 +110,7 @@ class NotesService {
       final updatedNote = await getNote(id: note.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
-      _notesStreamControlled.add(_notes);
+      _notesStreamController.add(_notes);
       return updatedNote;
     }
   }
@@ -115,7 +120,7 @@ class NotesService {
     final db = _getDatabaseOrThrow();
     final numberOfDeletions = await db!.delete(noteTable);
     _notes = [];
-    _notesStreamControlled.add(_notes);
+    _notesStreamController.add(_notes);
     return numberOfDeletions;
   }
 

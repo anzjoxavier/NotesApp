@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:simpleproject/services/auth/auth_service.dart';
 import 'package:simpleproject/services/crud/notes_service.dart';
 import 'dart:developer' as devtools show log;
-import '../constants/route.dart';
-import '../enums/menu_action.dart';
+import '../../constants/route.dart';
+import '../../enums/menu_action.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -35,6 +35,11 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text("Main UI"),
         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(newNoteRoute);
+              },
+              icon: const Icon(Icons.add)),
           PopupMenuButton<MenuAction>(onSelected: (value) async {
             switch (value) {
               case MenuAction.logout:
@@ -67,11 +72,10 @@ class _NotesViewState extends State<NotesView> {
                       case ConnectionState.waiting:
                         return const Text("Waiting for all nodes");
                       default:
-                        return  const Scaffold(
-                  body: Center(child: CircularProgressIndicator()));
+                        return const Scaffold(
+                            body: Center(child: CircularProgressIndicator()));
                     }
                   });
-              break;
             default:
               return const Scaffold(
                   body: Center(child: CircularProgressIndicator()));
