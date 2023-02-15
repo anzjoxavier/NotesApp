@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:simpleproject/services/auth/auth_service.dart';
 import 'package:simpleproject/services/crud/notes_service.dart';
+import '../../services/auth/auth_service.dart';
 
 class NewNoteView extends StatefulWidget {
-  const NewNoteView({super.key});
+  const NewNoteView({Key? key}) : super(key: key);
 
   @override
-  State<NewNoteView> createState() => _NewNoteViewState();
+  _NewNoteViewState createState() => _NewNoteViewState();
 }
 
 class _NewNoteViewState extends State<NewNoteView> {
-  DatabaseNotes? _notes;
+  DatabaseNotes? _note;
   late final NotesService _notesService;
   late final TextEditingController _textController;
 
@@ -24,12 +22,15 @@ class _NewNoteViewState extends State<NewNoteView> {
   }
 
   void _textControllerListener() async {
-    final note = _notes;
+    final note = _note;
     if (note == null) {
       return;
     }
     final text = _textController.text;
-    await _notesService.updateNote(note: note, text: text);
+    await _notesService.updateNote(
+      note: note,
+      text: text,
+    );
   }
 
   void _setupTextControllerListener() {
@@ -38,7 +39,7 @@ class _NewNoteViewState extends State<NewNoteView> {
   }
 
   Future<DatabaseNotes> createNewNote() async {
-    final existingNote = _notes;
+    final existingNote = _note;
     if (existingNote != null) {
       return existingNote;
     }
@@ -49,24 +50,27 @@ class _NewNoteViewState extends State<NewNoteView> {
   }
 
   void _deleteNoteIfTextIsEmpty() {
-    final note = _notes;
+    final note = _note;
     if (_textController.text.isEmpty && note != null) {
-      _notesService.deleteNode(id: note.id);
+      _notesService.deleteNote(id: note.id);
     }
   }
 
-  Future<void> _saveNoteIfTextIsEmpty() async {
-    final note = _notes;
+  void _saveNoteIfTextNotEmpty() async {
+    final note = _note;
     final text = _textController.text;
     if (note != null && text.isNotEmpty) {
-      await _notesService.updateNote(note: note, text: text);
+      await _notesService.updateNote(
+        note: note,
+        text: text,
+      );
     }
   }
 
   @override
   void dispose() {
     _deleteNoteIfTextIsEmpty();
-    _saveNoteIfTextIsEmpty();
+    _saveNoteIfTextNotEmpty();
     _textController.dispose();
     super.dispose();
   }
@@ -74,13 +78,15 @@ class _NewNoteViewState extends State<NewNoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("New Note")),
+      appBar: AppBar(
+        title: const Text('New Note'),
+      ),
       body: FutureBuilder(
         future: createNewNote(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              _notes = snapshot.data as DatabaseNotes?;
+              _note = snapshot.data as DatabaseNotes;
               _setupTextControllerListener();
               return TextField(
                 controller: _textController,
