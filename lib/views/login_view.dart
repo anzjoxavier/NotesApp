@@ -6,7 +6,7 @@ import 'package:simpleproject/constants/route.dart';
 import 'package:simpleproject/services/auth/auth_exceptions.dart';
 import 'package:simpleproject/services/auth/auth_service.dart';
 
-import '../utilities/show_error.dart';
+import '../utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
