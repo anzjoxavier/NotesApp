@@ -27,7 +27,7 @@ class NotesService {
   late final StreamController<List<DatabaseNotes>> _notesStreamController;
 
   Stream<List<DatabaseNotes>> get allNotes =>
-      _notesStreamController.stream.filter((note){
+      _notesStreamController.stream.filter((note) {
         final currentUser = _user;
         if (currentUser != null) {
           return note.userId == currentUser.id;
@@ -98,6 +98,7 @@ class NotesService {
     final notes = await db.query(noteTable);
 
     return notes.map((noteRow) => DatabaseNotes.fromRow(noteRow));
+    
   }
 
   Future<DatabaseNotes> getNote({required int id}) async {
