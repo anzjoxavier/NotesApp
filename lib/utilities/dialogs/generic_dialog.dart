@@ -14,7 +14,7 @@ Future<T?> showGenericDialog<T>(
         return AlertDialog(
           title: Text(title),
           content: Text(content),
-          actions: options.keys.map((optionTitle) {
+          actions: options.keys.map((optionTitle){
             final value = options[optionTitle];
             return TextButton(
                 onPressed: () {
