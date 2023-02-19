@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:simpleproject/services/cloud/cloud_note.dart';
 import 'package:simpleproject/services/cloud/cloud_storage_constants.dart';
 import 'package:simpleproject/services/crud/crud_exceptions.dart';
+import 'package:simpleproject/services/cloud/cloud_storage_exceptions.dart';
 
 class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes');
@@ -11,12 +12,11 @@ class FirebaseCloudStorage {
           .map((doc) => CloudNote.fromSnapshot(doc))
           .where((note) => note.ownerUserId == ownerUserId));
 
-  Future<void> deleteNote({required String documentId}) async{
+  Future<void> deleteNote({required String documentId}) async {
     try {
-
       await notes.doc(documentId).delete();
     } catch (e) {
-      throw CouldNotDeleteNote();
+      throw CouldNotDeleteNoteException();
     }
   }
 
@@ -25,7 +25,7 @@ class FirebaseCloudStorage {
     try {
       await notes.doc(documentId).update({textFieldName: text});
     } catch (e) {
-      throw CouldNotUpdateNote();
+      throw CouldNotUpdateNoteException();
     }
   }
 
@@ -34,17 +34,16 @@ class FirebaseCloudStorage {
         .where(ownerUserFieldName, isEqualTo: ownerUserId)
         .get()
         .then((value) => value.docs.map(
-              (doc) {
-                return CloudNote(
-                    documentId: doc.id,
-                    ownerUserId: doc.data()[ownerUserFieldName] as String,
-                    text: doc.data()[textFieldName] as String);
-              },
+              (doc) => CloudNote.fromSnapshot(doc),
             ));
   }
 
-  void createNote({required String ownerUserId}) async {
-    await notes.add({ownerUserFieldName: ownerUserId, textFieldName: ''});
+  Future<CloudNote> createNote({required String ownerUserId}) async {
+    final document =
+        await notes.add({ownerUserFieldName: ownerUserId, textFieldName: ''});
+    final fetchedNote = await document.get();
+    return CloudNote(
+        documentId: fetchedNote.id, ownerUserId: ownerUserId, text: "");
   }
 
   static final FirebaseCloudStorage _shared =

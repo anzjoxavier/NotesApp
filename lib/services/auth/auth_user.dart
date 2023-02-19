@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthUser {
-  final String? uid;
+  final String uid;
   final bool isEmailVerified;
   final String email;
   AuthUser( {required this.uid,required this.email, required this.isEmailVerified});
