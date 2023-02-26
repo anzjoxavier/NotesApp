@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:simpleproject/constants/route.dart';
 import 'package:simpleproject/services/auth/auth_exceptions.dart';
-import 'package:simpleproject/services/auth/auth_service.dart';
 import 'package:simpleproject/services/auth/bloc/auth_bloc.dart';
 import 'package:simpleproject/services/auth/bloc/auth_event.dart';
 import 'package:simpleproject/services/auth/bloc/auth_state.dart';
@@ -51,42 +49,55 @@ class _RegisterViewState extends State<RegisterView> {
       },
       child: Scaffold(
         appBar: AppBar(title: const Text("Register")),
-        body: Column(
-          children: [
-            TextField(
-              controller: _email,
-              enableSuggestions: true,
-              autocorrect: true,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: "Email",
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Enter Your New Email and Password"),
+              TextField(
+                controller: _email,
+                enableSuggestions: true,
+                autocorrect: true,
+                autofocus: true,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  hintText: "Email",
+                ),
               ),
-            ),
-            TextField(
-              controller: _password,
-              obscureText: true,
-              enableSuggestions: true,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                hintText: "Password",
+              TextField(
+                controller: _password,
+                obscureText: true,
+                enableSuggestions: true,
+                autocorrect: false,
+                decoration: const InputDecoration(
+                  hintText: "Password",
+                ),
               ),
-            ),
-            TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                context
-                    .read<AuthBloc>()
-                    .add(AuthEventRegister(email, password));
-              },
-              child: const Text("Register"),
-            ),
-            TextButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(const AuthEventLogOut());
-                },
-                child: const Text("Login"))
-          ],
+              Center(
+                child: Column(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        final email = _email.text;
+                        final password = _password.text;
+                        context
+                            .read<AuthBloc>()
+                            .add(AuthEventRegister(email, password));
+                      },
+                      child: const Text("Register"),
+                    ),
+                    TextButton(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(const AuthEventLogOut());
+                    },
+                    child: const Text("Already Registered ? Login"))
+                  ],
+                ),
+              ),
+              
+            ],
+          ),
         ),
       ),
     );

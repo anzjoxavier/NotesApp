@@ -10,6 +10,7 @@ import 'package:simpleproject/services/auth/bloc/auth_bloc.dart';
 import 'package:simpleproject/services/auth/bloc/auth_event.dart';
 import 'package:simpleproject/services/auth/bloc/auth_state.dart';
 import 'package:simpleproject/services/auth/firebase_auth_provider.dart';
+import 'package:simpleproject/views/forget_password_dialog.dart';
 import 'package:simpleproject/views/login_view.dart';
 import 'package:simpleproject/views/notes/create_upadate_note_view.dart';
 import 'package:simpleproject/views/notes/notes_view.dart';
@@ -52,6 +53,8 @@ class HomePage extends StatelessWidget {
           return const NotesView();
         } else if (state is AuthStateNeedsVerification) {
           return const VerifyEmailView();
+        } else if (state is AuthStateForgetPassword) {
+          return const ForgotPasswordView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
         } else if (state is AuthStateRegistering) {

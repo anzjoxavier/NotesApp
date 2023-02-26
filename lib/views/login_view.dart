@@ -6,7 +6,6 @@ import 'package:simpleproject/services/auth/auth_exceptions.dart';
 import 'package:simpleproject/services/auth/bloc/auth_bloc.dart';
 import 'package:simpleproject/services/auth/bloc/auth_event.dart';
 import 'package:simpleproject/services/auth/bloc/auth_state.dart';
-import 'package:simpleproject/utilities/dialogs/loading_dialog.dart';
 
 import '../utilities/dialogs/error_dialog.dart';
 
@@ -43,7 +42,7 @@ class _LoginViewState extends State<LoginView> {
         if (state is AuthStateLoggedOut) {
 
           if (state.exception is UserNotfoundAuthException) {
-            await showErrorDialog(context, "User not found");
+            await showErrorDialog(context, "Cannot find user with entered Credentials");
           } else if (state.exception is WrongPasswordAuthException) {
             await showErrorDialog(context, "Wrong Credentials");
           } else if (state.exception is GenericAuthException) {
@@ -53,40 +52,49 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         appBar: AppBar(title: const Text("Login")),
-        body: Column(
-          children: [
-            TextField(
-              controller: _email,
-              enableSuggestions: true,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: "Email",
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const Text("Login with your Email and Password to Create Notes"),
+              TextField(
+                controller: _email,
+                enableSuggestions: true,
+                autocorrect: false,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  hintText: "Email",
+                ),
               ),
-            ),
-            TextField(
-              controller: _password,
-              obscureText: true,
-              enableSuggestions: true,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                hintText: "Password",
+              TextField(
+                controller: _password,
+                obscureText: true,
+                enableSuggestions: true,
+                autocorrect: false,
+                decoration: const InputDecoration(
+                  hintText: "Password",
+                ),
               ),
-            ),
-            TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                context.read<AuthBloc>().add(AuthEventLogIn(email, password));
-              },
-              child: const Text("Login"),
-            ),
-            TextButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(const AuthEventShouldRegister());
+              TextButton(
+                onPressed: () async {
+                  final email = _email.text;
+                  final password = _password.text;
+                  context.read<AuthBloc>().add(AuthEventLogIn(email, password));
                 },
-                child: const Text("Register Here"))
-          ],
+                child: const Text("Login"),
+              ),TextButton(
+                onPressed: () async {
+                  context.read<AuthBloc>().add(const AuthEventForgotPassword());
+                },
+                child: const Text("I forgot my password."),
+              ),
+              TextButton(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(const AuthEventShouldRegister());
+                  },
+                  child: const Text("Register Here"))
+            ],
+          ),
         ),
       ),
     );

@@ -30,10 +30,10 @@ void main() {
 
     test('Create user should delegate to login function', () async {
       final badUser =
-           provider.createUser(email: 'anzjo@gmail.com', password: 'pass');
+          provider.createUser(email: 'anzjo@gmail.com', password: 'pass');
       expect(badUser, throwsA(const TypeMatcher<UserNotfoundAuthException>()));
       final badPassword =
-           provider.createUser(email: 'anz@gmail.com', password: 'anzjo');
+          provider.createUser(email: 'anz@gmail.com', password: 'anzjo');
       expect(badPassword,
           throwsA(const TypeMatcher<WrongPasswordAuthException>()));
 
@@ -53,6 +53,14 @@ void main() {
       final user = provider.currentUser;
       expect(user, isNotNull);
     });
+    test('Should be able to reset Password', () {
+      final badRegister=provider.sendPasswordReset(toEmail: "anzjo@gmail.com");
+      expect(badRegister,
+          throwsA(const TypeMatcher<UserNotfoundAuthException>()));
+      provider.sendPasswordReset(toEmail: "email");
+      final isemailSend=provider.emailSend;
+      expect(isemailSend,true);
+    });
   });
 }
 
@@ -62,6 +70,7 @@ class MockAuthProvider implements AuthProvider {
   AuthUser? _user;
   var _isInitialized = false;
   bool get isInitialized => _isInitialized;
+  bool emailSend = false;
 
   @override
   Future<AuthUser> createUser(
@@ -85,7 +94,8 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     if (email == "anzjo@gmail.com") throw UserNotfoundAuthException();
     if (password == "anzjo") throw WrongPasswordAuthException();
-    final user = AuthUser(uid:'my_id',isEmailVerified: false, email: "anz@gmail.com");
+    final user =
+        AuthUser(uid: 'my_id', isEmailVerified: false, email: "anz@gmail.com");
     _user = user;
     return Future.value(user);
   }
@@ -102,7 +112,18 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotfoundAuthException();
-    final newUser = AuthUser(uid:'my_id',isEmailVerified: true, email: "anz@gmail.com");
+    final newUser =
+        AuthUser(uid: 'my_id', isEmailVerified: true, email: "anz@gmail.com");
     _user = newUser;
+  }
+
+  @override
+  Future<void> sendPasswordReset({required String toEmail}) async {
+    if (!isInitialized) throw NotInitializedException();
+    if (toEmail == "anzjo@gmail.com") {
+      throw UserNotfoundAuthException();
+    } else {
+      emailSend = true;
+    }
   }
 }

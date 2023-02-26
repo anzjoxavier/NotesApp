@@ -36,3 +36,10 @@ class AuthEventShouldRegister extends AuthEvent {
 class AuthEventUninitailized extends AuthEvent {
   const AuthEventUninitailized();
 }
+
+class AuthEventForgotPassword extends AuthEvent {
+  final String? email;
+  const AuthEventForgotPassword({this.email});
+  
+}
+
