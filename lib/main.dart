@@ -1,11 +1,7 @@
-import 'dart:developer';
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simpleproject/constants/route.dart';
 import 'package:simpleproject/helpers/loading/loading_screen.dart';
-import 'package:simpleproject/services/auth/auth_service.dart';
 import 'package:simpleproject/services/auth/bloc/auth_bloc.dart';
 import 'package:simpleproject/services/auth/bloc/auth_event.dart';
 import 'package:simpleproject/services/auth/bloc/auth_state.dart';
@@ -21,7 +17,7 @@ void main() {
   runApp(MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.cyan,
+        primarySwatch: Colors.lime,
       ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
