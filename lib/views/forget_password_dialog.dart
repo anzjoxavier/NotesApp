@@ -60,7 +60,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               const Text(
                   "We can't not process your request.Please check your email is registered."),
               TextField(
-                keyboardType: TextInputType.emailAddress,
+                keyboardType:TextInputType.emailAddress,
                 autocorrect: false,
                 controller: _textEditingController,
                 decoration: const InputDecoration(hintText: "Your Email Address"),
